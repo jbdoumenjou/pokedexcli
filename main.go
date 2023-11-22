@@ -1,5 +1,18 @@
 package main
 
+import (
+	"github.com/jbdoumenjou/pokedexcli/pokeapi"
+)
+
+type config struct {
+	pokeAPIClient           pokeapi.Client
+	NextLocationAreaUrl     *string
+	PreviousLocationAreaUrl *string
+}
+
 func main() {
-	startRepl()
+	config := &config{
+		pokeAPIClient: pokeapi.NewClient(),
+	}
+	startRepl(config)
 }
