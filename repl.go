@@ -10,11 +10,21 @@ import (
 type cliCommand struct {
 	name        string
 	description string
-	Callback    func(cfg *config) error
+	Callback    func(cfg *config, args ...string) error
 }
 
 func getCommands() map[string]cliCommand {
 	return map[string]cliCommand{
+		"exit": {
+			name:        "exit",
+			description: "commandExit the Pokedex",
+			Callback:    commandExit,
+		},
+		"explore": {
+			name:        "explore",
+			description: "Lists Pokemons for a location area",
+			Callback:    commandExplore,
+		},
 		"help": {
 			name:        "help",
 			description: "Displays a help message",
@@ -30,11 +40,6 @@ func getCommands() map[string]cliCommand {
 			description: "Displays the previous 20 locations areas in the Pokemon world",
 			Callback:    commandMapb,
 		},
-		"exit": {
-			name:        "exit",
-			description: "commandExit the Pokedex",
-			Callback:    commandExit,
-		},
 	}
 }
 
@@ -47,7 +52,8 @@ func startRepl(cfg *config) {
 		fmt.Print("Pokedex >")
 
 		scanner.Scan()
-		commandName := cleanInput(scanner.Text())[0]
+		args := cleanInput(scanner.Text())
+		commandName := args[0]
 		cmd, ok := commands[commandName]
 		if !ok {
 			fmt.Printf("Unknown command %q\n", commandName)
@@ -55,7 +61,7 @@ func startRepl(cfg *config) {
 			continue
 		}
 
-		if err := cmd.Callback(cfg); err != nil {
+		if err := cmd.Callback(cfg, args[1:]...); err != nil {
 			fmt.Printf("command %q failed: %s\n", commandName, err.Error())
 		}
 	}

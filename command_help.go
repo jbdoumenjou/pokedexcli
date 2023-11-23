@@ -5,7 +5,7 @@ import (
 )
 
 // HelpCommand is a command that prints the help message
-func commandHelp(_ *config) error {
+func commandHelp(_ *config, _ ...string) error {
 	fmt.Println("Welcome to the Pokedex!\nUsage:")
 	availableCommands := getCommands()
 

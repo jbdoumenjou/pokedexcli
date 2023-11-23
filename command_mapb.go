@@ -6,7 +6,7 @@ import (
 )
 
 // commandMap Displays the names of the next 20 location areas in the Pokemon world.
-func commandMapb(cfg *config) error {
+func commandMapb(cfg *config, _ ...string) error {
 	if cfg.PreviousLocationAreaUrl == nil {
 		return errors.New("you are on the first page")
 	}
