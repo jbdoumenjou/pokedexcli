@@ -27,36 +27,12 @@ func (c *Client) ListLocationAreas(pageURL *string) (LocationAreasResp, error) {
 		fullURL = *pageURL
 	}
 
-	// First check the cache
-	if cached, ok := c.cache.Get(fullURL); ok {
-		fmt.Println("Using cache")
-		if err := json.Unmarshal(cached, &locations); err != nil {
-			return locations, fmt.Errorf("unmarshal cached: %w", err)
-		}
-		return locations, nil
-	}
-
-	// no cache, let's make the request
-	request, err := http.NewRequest("GET", fullURL, nil)
+	data, err := c.get(fullURL)
 	if err != nil {
-		return locations, fmt.Errorf("new request Get on %q: %w", fullURL, err)
+		return locations, fmt.Errorf("get: %w", err)
 	}
 
-	resp, err := c.httpClient.Do(request)
-	if err != nil {
-		return locations, fmt.Errorf("do request: %w", err)
-	}
-	defer resp.Body.Close()
-
-	if resp.StatusCode > 299 {
-		return locations, fmt.Errorf("resp failed with status code: %d", resp.StatusCode)
-	}
-
-	body, err := io.ReadAll(resp.Body)
-	// Populate the cache
-	c.cache.Add(fullURL, body)
-
-	if err = json.Unmarshal(body, &locations); err != nil {
+	if err = json.Unmarshal(data, &locations); err != nil {
 		return locations, fmt.Errorf("unmarshal body: %w", err)
 	}
 
@@ -97,7 +73,7 @@ func (c *Client) ExploreLocationArea(name string) (LocationArea, error) {
 	// no cache, let's make the request
 	request, err := http.NewRequest("GET", fullURL, nil)
 	if err != nil {
-		return location, fmt.Errorf("new request Get on %q: %w", fullURL, err)
+		return location, fmt.Errorf("new request get on %q: %w", fullURL, err)
 	}
 
 	resp, err := c.httpClient.Do(request)
