@@ -19,7 +19,7 @@ func commandHelp(_ *config, _ ...string) error {
 	slices.Sort(commandNames)
 	for _, name := range commandNames {
 		command := availableCommands[name]
-		fmt.Printf("%s: %s\n", command.name, command.description)
+		fmt.Printf("  - %s: %s\n", command.name, command.description)
 	}
 
 	return nil
