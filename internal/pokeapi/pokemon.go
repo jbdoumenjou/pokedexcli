@@ -13,6 +13,38 @@ type Pokemon struct {
 	Name                   string `json:"name"`
 	Order                  int    `json:"order"`
 	Weight                 int    `json:"weight"`
+	Stats                  []struct {
+		BaseStat int `json:"base_stat"`
+		Effort   int `json:"effort"`
+		Stat     struct {
+			Name string `json:"name"`
+			URL  string `json:"url"`
+		} `json:"stat"`
+	} `json:"stats"`
+	Types []struct {
+		Slot int `json:"slot"`
+		Type struct {
+			Name string `json:"name"`
+			URL  string `json:"url"`
+		} `json:"type"`
+	} `json:"types"`
+}
+
+func (p Pokemon) ToString() string {
+	var str string
+	str += fmt.Sprintf("Name: %s\n", p.Name)
+	str += fmt.Sprintf("Height: %d\n", p.Height)
+	str += fmt.Sprintf("Weight: %d\n", p.Weight)
+	str += "Stats: \n"
+	for _, stat := range p.Stats {
+		str += fmt.Sprintf("  - %s: %d\n", stat.Stat.Name, stat.BaseStat)
+	}
+	str += "Types: \n"
+	for _, t := range p.Types {
+		str += fmt.Sprintf("  - %s\n", t.Type.Name)
+	}
+
+	return str
 }
 
 // GetPokemon return a Pokemon for the given name.
